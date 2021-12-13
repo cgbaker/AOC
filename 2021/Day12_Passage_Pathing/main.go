@@ -14,7 +14,7 @@ const (
 )
 
 func main() {
-	file, err := os.Open("sample1.txt")
+	file, err := os.Open("input.txt")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -22,9 +22,9 @@ func main() {
 	scanner := bufio.NewScanner(file)
 
 	puzzle := readPuzzle(scanner)
-	fmt.Println(puzzle)
+	//fmt.Println(puzzle)
 
-	fmt.Println("Part1:", part1(puzzle))
+	//fmt.Println("Part1:", part1(puzzle))
 	fmt.Println("Part2:", part2(puzzle))
 }
 
@@ -53,19 +53,21 @@ func part2(puzzle *Puzzle) int {
 	seen := map[Path]bool{}
 	numPaths := 0
 	stack := []Path{START}
+	seen[START] = true
 	for len(stack) != 0 {
 		p := stack[0]
 		stack = stack[1:]
-		seen[p] = true
 		for n := range puzzle.graph[p.end()] {
 			if n == START { // don't go back to START
 				continue
 			}
 			nextPath := p.append(n)
 			if !seen[nextPath] && !nextPath.containsMoreThanOneSmallVisit() {
-				stack = append(stack, nextPath)
+				seen[nextPath] = true
 				if n == END {
 					numPaths++
+				} else {
+					stack = append(stack, nextPath)
 				}
 			}
 		}
@@ -144,8 +146,14 @@ func (p Path) containsMoreThanOneSmallVisit() bool {
 			visits[c]++
 		}
 	}
+	moreThanOne := 0
 	for _, v := range visits {
-		if v > 1 {
+		if v == 2 {
+			moreThanOne++
+		} else if v > 2 {
+			return true
+		}
+		if moreThanOne > 1 {
 			return true
 		}
 	}
