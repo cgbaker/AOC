@@ -17,8 +17,8 @@ func main() {
 	puzzle := readPuzzle(file)
 	//puzzle.print()
 
-	//fmt.Println("Part1:", puzzle.shortestPath())
-	fmt.Println("Part2:", puzzle.shortestPath2())
+	fmt.Println("Part1:", puzzle.shortestPath(1))
+	fmt.Println("Part2:", puzzle.shortestPath(5))
 }
 
 func readPuzzle(file *os.File) *Puzzle {
@@ -63,70 +63,24 @@ type Coord struct {
 	x, y int
 }
 
-func (p *Puzzle) shortestPath() int {
-	START := Coord{0,0}
-	END := Coord{p.width-1,p.height-1}
-
-	minRisk := map[Coord]int{}
-	minRisk[START] = 0
-
-	next := []Coord{START}
-	for len(next) != 0 {
-		c := next[0]
-		curMin := minRisk[c]
-		next = next[1:]
-		nei := p.getNeighbors(c)
-		for _, n := range nei {
-			proposed := curMin + p.getRisk(n)
-			if cur, seen := minRisk[n]; !seen || proposed < cur {
-				minRisk[n] = proposed
-				next = append(next, n)
-			}
-		}
-	}
-
-	return minRisk[END]
-}
-
-func (p *Puzzle) getNeighbors(c Coord) []Coord {
+func (p *Puzzle) getNeighbors(c Coord, scale int) []Coord {
 	nei := make([]Coord, 0, 4)
 	if c.x > 0 {
 		nei = append(nei, Coord{c.x-1,c.y})
 	}
-	if c.x < p.width-1 {
+	if c.x < scale*p.width-1 {
 		nei = append(nei, Coord{c.x+1, c.y})
 	}
 	if c.y > 0 {
 		nei = append(nei, Coord{c.x, c.y-1})
 	}
-	if c.y < p.height-1 {
-		nei = append(nei, Coord{c.x, c.y+1})
-	}
-	return nei
-}
-
-func (p *Puzzle) getNeighbors2(c Coord) []Coord {
-	nei := make([]Coord, 0, 4)
-	if c.x > 0 {
-		nei = append(nei, Coord{c.x-1,c.y})
-	}
-	if c.x < 5*p.width-1 {
-		nei = append(nei, Coord{c.x+1, c.y})
-	}
-	if c.y > 0 {
-		nei = append(nei, Coord{c.x, c.y-1})
-	}
-	if c.y < 5*p.height-1 {
+	if c.y < scale*p.height-1 {
 		nei = append(nei, Coord{c.x, c.y+1})
 	}
 	return nei
 }
 
 func (p *Puzzle) getRisk(n Coord) int {
-	return int(p.risk[n.y*p.width + n.x])
-}
-
-func (p *Puzzle) getRisk2(n Coord) int {
 	tx, ty := n.x / p.width, n.y / p.height
 	sx, sy := n.x % p.width, n.y % p.height
 	r := int(p.risk[sy*p.width + sx])
@@ -137,9 +91,9 @@ func (p *Puzzle) getRisk2(n Coord) int {
 	return r
 }
 
-func (p *Puzzle) shortestPath2() int {
+func (p *Puzzle) shortestPath(scale int) int {
 	START := Coord{0,0}
-	END := Coord{5*p.width-1,5*p.height-1}
+	END := Coord{scale*p.width-1,scale*p.height-1}
 
 	minRisk := map[Coord]int{}
 	minRisk[START] = 0
@@ -149,9 +103,9 @@ func (p *Puzzle) shortestPath2() int {
 		c := next[0]
 		curMin := minRisk[c]
 		next = next[1:]
-		nei := p.getNeighbors2(c)
+		nei := p.getNeighbors(c, scale)
 		for _, n := range nei {
-			proposed := curMin + p.getRisk2(n)
+			proposed := curMin + p.getRisk(n)
 			if cur, seen := minRisk[n]; !seen || proposed < cur {
 				minRisk[n] = proposed
 				next = append(next, n)
@@ -160,11 +114,4 @@ func (p *Puzzle) shortestPath2() int {
 	}
 
 	return minRisk[END]
-}
-
-func min(a, b int) int {
-	if a < b {
-		return a
-	}
-	return b
 }
