@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"encoding/hex"
 	"fmt"
 	"log"
 	"os"
@@ -24,10 +25,15 @@ func main() {
 func readPacket(file *os.File) *Packet {
 	scanner := bufio.NewScanner(file)
 	scanner.Split(bufio.ScanLines)
-	bytes := []uint8{}
+	bytes := []byte{}
 	scanner.Scan()
-	for _, b := range scanner.Text() {
-		bytes = append(bytes, fromHex(b))
+	str := scanner.Text()
+	if len(str) % 2 != 0 {
+		str += "0"
+	}
+	bytes, err := hex.DecodeString(str)
+	if err != nil {
+		panic("parsing: " + err.Error())
 	}
 	return &Packet{
 		bytes: bytes,
@@ -35,31 +41,85 @@ func readPacket(file *os.File) *Packet {
 }
 
 type Packet struct {
-	// i'm storing 4 bits into 8 bits... i may regret this later...
-	bytes []uint8
+	version int
+	typeId  int
+	subPackets []Packet
 }
 
+type Type byte
+const (
+	LITERAL Type = 4
+)
+
 func (p *Packet) getSubPackets() []Packet {
-	return nil
+	if p.getType() == LITERAL {
+		return nil
+	}
+	//var subPacketBytes []byte
+	lenType := p.getLengthType()
+	length := 0
+	shift := 0
+	switch lenType {
+	case 0:
+		// need 15 == 1 + 8 + 6
+		length = int(0b00000001 & p.bytes[0]) << 14
+		length += int(p.bytes[1]) << 6
+		length += int(p.bytes[2] & 0b11111100) >> 2
+		shift = 22
+	case 1:
+		// need 11 == 1 + 8 + 2
+		length = int(0b00000001 & p.bytes[0]) << 10
+		length += int(p.bytes[1]) << 2
+		length += int(p.bytes[2] & 0b11000000) >> 6
+		shift = 18
+	}
+	subPacketBytes := shiftBytes(p.bytes, shift)
+	return dividePackets(subPacketBytes, lenType, length)
+}
+
+func shiftBytes(bytes []byte, shift int) []byte {
+	shiftBytes := shift / 8
+	shiftBits := shift % 8
+	trunc := bytes[shiftBytes:]
+	if shiftBits == 0 {
+		return trunc
+	}
+	shifted := make([]byte,0,len(trunc))
+	high := 0
+	low := 0
+	for i, t := range trunc {
+		high = ((int(t) << shiftBits) & 0xff00) >> 8
+		if i > 0 {
+			if high | low > 255 {
+				panic("too big")
+			}
+			shifted = append(shifted, byte(high | low))
+		}
+		low = int(t) << shiftBits & 255
+	}
+	shifted = append(shifted, byte(low))
+	return shifted
 }
 
 func (p *Packet) sumOfVersions() int {
-	sum := p.getVersion()
+	sum := int(p.getVersion())
 	for _, sub := range p.getSubPackets() {
 		sum += sub.sumOfVersions()
 	}
 	return sum
 }
 
-func (p *Packet) getVersion() int {
-	return 0
+func (p *Packet) getVersion() byte {
+	return (p.bytes[0] & 0b11100000) >> 5
 }
 
-func fromHex(b int32) uint8 {
-	if b >= '0' && b <= '9' {
-		return uint8(b - '0')
-	} else if b >= 'A' && b <= 'F' {
-		return uint8(b - 'A' + 10)
+func (p *Packet) getType() Type {
+	return Type(p.bytes[0] & 0b00011100 >> 2)
+}
+
+func (p *Packet) getLengthType() byte {
+	if p.getType() == LITERAL {
+		panic("no length type")
 	}
-	panic(fmt.Sprintln("i don't know what i'm reading:",string(b)))
+	return (p.bytes[0] & 0b00000010) >> 1
 }
