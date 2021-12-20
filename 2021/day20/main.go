@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"bytes"
 	"fmt"
 	"log"
 	"os"
@@ -14,31 +15,29 @@ func main() {
 		log.Fatal(err)
 	}
 	defer file.Close()
-	algo, img := readInput(file, numSteps)
+	algo, img := readInput(file)
+	void := byte(0)
 	for s := 0; s < numSteps; s++ {
-		img = algo.enhance(img)
-	}
-	img.print()
-	count := 0
-	for y := 2; y < img.size-2; y++ {
-		for _, p := range img.pixels[y*img.size + 2 : y*img.size + img.size - 2] {
-			count += int(p)
+		img = algo.enhance(img,void)
+		if algo[0] != 0 {
+			void ^= 1
 		}
 	}
-	fmt.Println("num lit:",count)
+	img.print()
+	fmt.Println("num lit:",bytes.Count(img.pixels, []byte{1}))
 }
 
 type Algorithm []byte
 
-func (a Algorithm) enhance(input *Image) *Image {
+func (a Algorithm) enhance(input *Image, void byte) *Image {
+	sz := input.size+2
 	output := &Image{
-		border: input.border,
-		size: input.size,
-		pixels: make([]byte,input.size*input.size),
+		size: sz,
+		pixels: make([]byte,sz*sz),
 	}
-	for y := 1; y < output.size-1; y++ {
-		for x := 1; x < output.size-1; x++ {
-			idx := input.applyStencil(y,x)
+	for y := 0; y < output.size; y++ {
+		for x := 0; x < output.size; x++ {
+			idx := input.applyStencil(y-1,x-1,void)
 			output.pixels[y*output.size + x] = a[idx]
 		}
 	}
@@ -46,35 +45,37 @@ func (a Algorithm) enhance(input *Image) *Image {
 }
 
 type Image struct {
-	border int
 	size int
 	pixels []byte
 }
 
-func (i *Image) append(row int, str string) {
+func (i *Image) append(str string) {
 	if i.size == 0 {
-		i.size = len(str)+2*i.border
-		i.pixels = make([]byte, i.size*i.size)
+		i.size = len(str)
+		i.pixels = make([]byte, 0, i.size*i.size)
 	}
-	start := row*i.size + i.border
-	copy(i.pixels[start:], toBytes(str))
+	i.pixels = append(i.pixels, toBytes(str)...)
 }
 
-func (i *Image) applyStencil(y int, x int) int16 {
+func (i *Image) applyStencil(y int, x int, void byte) int16 {
 	acc := int16(0)
-	idx := (y-1)*i.size + (x-1)
-	acc += int16(i.pixels[idx+0]) << 8
-	acc += int16(i.pixels[idx+1]) << 7
-	acc += int16(i.pixels[idx+2]) << 6
-	idx += i.size
-	acc += int16(i.pixels[idx+0]) << 5
-	acc += int16(i.pixels[idx+1]) << 4
-	acc += int16(i.pixels[idx+2]) << 3
-	idx += i.size
-	acc += int16(i.pixels[idx+0]) << 2
-	acc += int16(i.pixels[idx+1]) << 1
-	acc += int16(i.pixels[idx+2]) << 0
+	acc += int16(i.get(y-1,x-1, void)) << 8
+	acc += int16(i.get(y-1,x  , void)) << 7
+	acc += int16(i.get(y-1,x+1, void)) << 6
+	acc += int16(i.get(y  ,x-1, void)) << 5
+	acc += int16(i.get(y  ,x  , void)) << 4
+	acc += int16(i.get(y  ,x+1, void)) << 3
+	acc += int16(i.get(y+1,x-1, void)) << 2
+	acc += int16(i.get(y+1,x  , void)) << 1
+	acc += int16(i.get(y+1,x+1, void)) << 0
 	return acc
+}
+
+func (i *Image) get(y, x int, void byte) byte {
+	if 0 <= y && y < i.size && 0 <= x && x < i.size {
+		return i.pixels[i.size*y + x]
+	}
+	return void
 }
 
 func (img *Image) print() {
@@ -92,18 +93,14 @@ func (img *Image) print() {
 	fmt.Println("")
 }
 
-func readInput(file *os.File, border int) (Algorithm, *Image) {
+func readInput(file *os.File) (Algorithm, *Image) {
 	scanner := bufio.NewScanner(file)
 	scanner.Split(bufio.ScanWords)
 	scanner.Scan()
 	algo := toBytes(scanner.Text())
-	image := &Image{
-		border: border,
-	}
-	atRow := border
+	image := &Image{}
 	for scanner.Scan() {
-		image.append(atRow, scanner.Text())
-		atRow++
+		image.append(scanner.Text())
 	}
 	return algo, image
 }
