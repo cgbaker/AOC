@@ -2,43 +2,43 @@ package main
 
 import (
 	"bufio"
-	"bytes"
 	"fmt"
 	"log"
 	"os"
 )
 
 func main() {
-	numSteps := 2
-	file, err := os.Open("sample.txt")
+	numSteps := 50
+	file, err := os.Open("input.txt")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer file.Close()
-	algo, img := readInput(file, 5)
-	img.print()
+	algo, img := readInput(file, numSteps)
 	for s := 0; s < numSteps; s++ {
 		img = algo.enhance(img)
-		img.print()
 	}
-	fmt.Println("num lit:",bytes.Count(img.pixels, []byte{1}))
+	img.print()
+	count := 0
+	for y := 2; y < img.size-2; y++ {
+		for _, p := range img.pixels[y*img.size + 2 : y*img.size + img.size - 2] {
+			count += int(p)
+		}
+	}
+	fmt.Println("num lit:",count)
 }
 
 type Algorithm []byte
 
 func (a Algorithm) enhance(input *Image) *Image {
-	if input.border <= 0 {
-		panic("not enough room")
-	}
 	output := &Image{
-		border: input.border-1,
+		border: input.border,
 		size: input.size,
 		pixels: make([]byte,input.size*input.size),
 	}
-	for y := output.border; y < output.size-output.border; y++ {
-		for x := output.border; x < output.size-output.border; x++ {
+	for y := 1; y < output.size-1; y++ {
+		for x := 1; x < output.size-1; x++ {
 			idx := input.applyStencil(y,x)
-			//fmt.Printf("y: %d, x: %d, idx: %d\n",y,x,idx)
 			output.pixels[y*output.size + x] = a[idx]
 		}
 	}
@@ -60,20 +60,20 @@ func (i *Image) append(row int, str string) {
 	copy(i.pixels[start:], toBytes(str))
 }
 
-func (i *Image) applyStencil(y int, x int) int {
-	acc := 0
+func (i *Image) applyStencil(y int, x int) int16 {
+	acc := int16(0)
 	idx := (y-1)*i.size + (x-1)
-	acc += int(i.pixels[idx+0]) << 8
-	acc += int(i.pixels[idx+1]) << 7
-	acc += int(i.pixels[idx+2]) << 6
+	acc += int16(i.pixels[idx+0]) << 8
+	acc += int16(i.pixels[idx+1]) << 7
+	acc += int16(i.pixels[idx+2]) << 6
 	idx += i.size
-	acc += int(i.pixels[idx+0]) << 5
-	acc += int(i.pixels[idx+1]) << 4
-	acc += int(i.pixels[idx+2]) << 3
+	acc += int16(i.pixels[idx+0]) << 5
+	acc += int16(i.pixels[idx+1]) << 4
+	acc += int16(i.pixels[idx+2]) << 3
 	idx += i.size
-	acc += int(i.pixels[idx+0]) << 2
-	acc += int(i.pixels[idx+1]) << 1
-	acc += int(i.pixels[idx+2]) << 0
+	acc += int16(i.pixels[idx+0]) << 2
+	acc += int16(i.pixels[idx+1]) << 1
+	acc += int16(i.pixels[idx+2]) << 0
 	return acc
 }
 
