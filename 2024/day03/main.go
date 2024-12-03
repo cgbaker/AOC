@@ -9,35 +9,42 @@ import (
 	"regexp"
 )
 
+var (
+	re *regexp.Regexp
+)
+
+type Op interface {}
+
 type MulOp struct {
 	a, b int
 }
 
-type Do struct {
+type DoOp struct {
 }
 
 type DoNot struct {
 }
 
 type Input struct {
-	ops []interface{}
+	ops []Op
 }
 
 func main() {
+	re = regexp.MustCompile(`do\(\)|don't\(\)|mul\((\d+),(\d+)\)`)
 	file, err := os.Open("input.txt")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer file.Close()
 	input := readInput(file)
-	prob1(input)
+	// prob1(input)
 	prob2(input)
 }
 
-func prob1(input *Input) {
+func prob1(input *bufio.Scanner) {
 	sum := 0
-	for _, op := range input.ops {
-		switch op := op.(type) {
+	for input.Scan() {
+		switch op := parseOp(input.Text()).(type) {
 		case MulOp:
 			sum += op.a * op.b
 		default:
@@ -46,12 +53,12 @@ func prob1(input *Input) {
 	fmt.Printf("prob1: %d\n",sum)
 }
 
-func prob2(input *Input) {
+func prob2(input *bufio.Scanner) {
 	sum := 0
 	enabled := true
-	for _, op := range input.ops {
-		switch op := op.(type) {
-		case Do:
+	for input.Scan() {
+		switch op := parseOp(input.Text()).(type) {
+		case DoOp:
 			enabled = true
 		case DoNot:
 			enabled = false
@@ -64,29 +71,25 @@ func prob2(input *Input) {
 	fmt.Printf("prob2: %d\n",sum)
 }
 
-func readInput(file *os.File) *Input {
-	pattern := regexp.MustCompile(`do\(\)|don't\(\)|mul\((\d+),(\d+)\)`)
-	input := &Input{
-		ops: []interface{}{},
-	}
-	lineScanner := bufio.NewScanner(file)
-	lineScanner.Split(bufio.ScanLines)
-	for lineScanner.Scan() {
-		matches := pattern.FindAllStringSubmatch( lineScanner.Text(), -1 )
-		for _, m := range matches {
-			var op interface{}
-			switch m[0] {
-			case "do()":
-				op = Do{}
-			case "don't()":
-				op = DoNot{}
-			default:
-				op = MulOp{utils.Atoi(m[1]), utils.Atoi(m[2])}
-			}
-			input.ops = append(input.ops, op)
-		}
-	}
-	return input
+func readInput(file *os.File) *bufio.Scanner {
+	regexScanner := bufio.NewScanner(file)
+	regexScanner.Split(utils.SplitRegex(re))
+	return regexScanner
 }
 
+func parseOp(s string) (op Op) {
+	m := re.FindStringSubmatch(s)
+	if m == nil {
+		panic("This should have been a valid match")
+	}
+	switch m[0] {
+	case "do()":
+		op = DoOp{}
+	case "don't()":
+		op = DoNot{}
+	default:
+		op = MulOp{utils.Atoi(m[1]), utils.Atoi(m[2])}
+	}
+	return
+}
 

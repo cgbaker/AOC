@@ -1,6 +1,9 @@
 package utils
 
 import (
+	"bufio"
+	"io"
+	"regexp"
 	"strconv"
 )
 
@@ -28,3 +31,20 @@ func Atoi(s string) int {
 	}
 	return x
 }
+
+// from: https://www.reddit.com/r/golang/comments/enzpes/comment/fe8q1lj
+func SplitRegex(re *regexp.Regexp) bufio.SplitFunc {
+	return func(data []byte, atEOF bool) (advance int, token []byte, err error) {
+		if atEOF && len(data) == 0 {
+			return 0, nil, nil
+		}
+		if loc := re.FindIndex(data); loc != nil {
+			return loc[1], data[loc[0]:loc[1]], nil
+		}
+		if atEOF {
+			return 0, nil, io.EOF
+		}
+		return 0, nil, nil
+	}
+}
+
