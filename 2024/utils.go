@@ -1,5 +1,9 @@
 package utils
 
+import (
+	"strconv"
+)
+
 func AbsInt(x int) int {
 	if x < 0 {
 		return -x
@@ -15,4 +19,12 @@ func SignInt(x int) int {
 	} else {
 		return 0
 	}
+}
+
+func Atoi(s string) int {
+	x, err := strconv.Atoi(s)
+	if err != nil {
+		panic(err)
+	}
+	return x
 }
