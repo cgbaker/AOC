@@ -3,6 +3,7 @@ package utils
 import (
 	"bufio"
 	"io"
+	"os"
 	"regexp"
 	"strconv"
 )
@@ -48,3 +49,42 @@ func SplitRegex(re *regexp.Regexp) bufio.SplitFunc {
 	}
 }
 
+type CharGrid struct {
+	NumRows, NumCols int
+	// row-wise array
+	chars []byte 
+}
+
+func (g *CharGrid) GetChar(r, c int) byte {
+	if r >= g.NumRows || r < 0 || c >=g.NumCols || c < 0 {
+		return 0;
+	}
+	return g.chars[c*g.NumRows + r];
+}
+
+func ReadCharGrid(file *os.File) *CharGrid {
+	grid := &CharGrid{
+		NumCols: 0,
+		NumRows: 0,
+		chars:  []byte{},
+	}
+	lineScanner := bufio.NewScanner(file)
+	lineScanner.Split(bufio.ScanLines)
+	if lineScanner.Scan() {
+		line := lineScanner.Text()
+		grid.NumCols = len(line)
+		if grid.NumCols > 0 {
+			grid.NumRows++
+			grid.chars = append(grid.chars, []byte(line)...)
+		}
+	}
+	for lineScanner.Scan() {
+		line := lineScanner.Text()
+		if len(line) != grid.NumCols {
+			panic("read unexpected line number")
+		}
+		grid.NumRows++
+		grid.chars = append(grid.chars, []byte(line)...)
+	}
+	return grid
+}
