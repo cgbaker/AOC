@@ -88,3 +88,10 @@ func ReadCharGrid(file *os.File) *CharGrid {
 	}
 	return grid
 }
+
+func GetMiddle(x []int) int {
+	if len(x) == 0 {
+		panic("undefined")
+	}
+	return x[len(x)/2]
+}
