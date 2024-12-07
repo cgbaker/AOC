@@ -154,3 +154,11 @@ func GetMiddle(x []int) int {
 	}
 	return x[len(x)/2]
 }
+
+func Pow(a, b int) int {
+	res := 1
+	for range b {
+		res *= a
+	}
+	return res
+}
