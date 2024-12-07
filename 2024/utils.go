@@ -2,9 +2,11 @@ package utils
 
 import (
 	"bufio"
+	"fmt"
 	"io"
 	"os"
 	"regexp"
+	"slices"
 	"strconv"
 )
 
@@ -52,21 +54,76 @@ func SplitRegex(re *regexp.Regexp) bufio.SplitFunc {
 type CharGrid struct {
 	NumRows, NumCols int
 	// row-wise array
-	chars []byte 
+	Chars []byte 
 }
 
-func (g *CharGrid) GetChar(r, c int) byte {
+type Coord interface {
+	Row() int
+	Col() int
+}
+
+type Point struct {
+	r, c int
+}
+func (c *Point) Row() int {
+	return c.r
+}
+func (c *Point) Col() int {
+	return c.c
+}
+
+func NewPoint(r, c int) Point {
+	return Point{
+		r: r,
+		c: c,
+	}
+}
+
+func NewCoord(r, c int) Coord {
+	return &Point{
+		r: r,
+		c: c,
+	}
+}
+
+func (g *CharGrid) GetChar(coord Coord) byte {
+	r, c := coord.Row(), coord.Col()
 	if r >= g.NumRows || r < 0 || c >=g.NumCols || c < 0 {
 		return 0;
 	}
-	return g.chars[c*g.NumRows + r];
+	return g.Chars[r*g.NumCols + c];
+}
+
+func (g *CharGrid) Print() {
+	ln := g.Chars
+	for range g.NumRows {
+		fmt.Println(string(ln[:g.NumCols]))
+		ln = ln[g.NumCols:]
+	}
+}
+
+func (g *CharGrid) SetChar(coord Coord, val byte) {
+	r, c := coord.Row(), coord.Col()
+	if r >= g.NumRows || r < 0 || c >=g.NumCols || c < 0 {
+		return
+	}
+	g.Chars[r*g.NumCols + c] = val;
+}
+
+func (g *CharGrid) Clone() *CharGrid {
+	clone := &CharGrid{
+		NumCols: g.NumCols,
+		NumRows: g.NumRows,
+		Chars: slices.Clone(g.Chars),
+	}
+	return clone
 }
 
 func ReadCharGrid(file *os.File) *CharGrid {
 	grid := &CharGrid{
 		NumCols: 0,
 		NumRows: 0,
-		chars:  []byte{},
+		Chars:  []byte{},
 	}
 	lineScanner := bufio.NewScanner(file)
 	lineScanner.Split(bufio.ScanLines)
@@ -75,7 +132,7 @@ func ReadCharGrid(file *os.File) *CharGrid {
 		grid.NumCols = len(line)
 		if grid.NumCols > 0 {
 			grid.NumRows++
-			grid.chars = append(grid.chars, []byte(line)...)
+			grid.Chars = append(grid.Chars, []byte(line)...)
 		}
 	}
 	for lineScanner.Scan() {
@@ -84,10 +141,12 @@ func ReadCharGrid(file *os.File) *CharGrid {
 			panic("read unexpected line number")
 		}
 		grid.NumRows++
-		grid.chars = append(grid.chars, []byte(line)...)
+		grid.Chars = append(grid.Chars, []byte(line)...)
 	}
 	return grid
 }
+
+
 
 func GetMiddle(x []int) int {
 	if len(x) == 0 {
