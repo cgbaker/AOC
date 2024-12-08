@@ -71,6 +71,18 @@ func (c *Point) Row() int {
 func (c *Point) Col() int {
 	return c.c
 }
+func (a Point) Minus(b Point) Point {
+	return Point{
+		r: a.r - b.r,
+		c: a.c - b.c,
+	}
+}
+func (a Point) Plus(b Point) Point {
+	return Point{
+		r: a.r + b.r,
+		c: a.c + b.c,
+	}
+}
 
 func NewPoint(r, c int) Point {
 	return Point{
@@ -84,6 +96,14 @@ func NewCoord(r, c int) Coord {
 		r: r,
 		c: c,
 	}
+}
+
+func (g *CharGrid) Index(r, c int) int {
+	return r*g.NumCols + c
+}
+
+func (g *CharGrid) RowCol(index int) (int, int) {
+	return index/g.NumCols, index%g.NumCols
 }
 
 func (g *CharGrid) GetChar(coord Coord) byte {
@@ -117,6 +137,14 @@ func (g *CharGrid) Clone() *CharGrid {
 		Chars: slices.Clone(g.Chars),
 	}
 	return clone
+}
+
+func NewCharGrid(r, c int) *CharGrid {
+	return &CharGrid{
+		NumCols: c, 
+		NumRows: r,
+		Chars: make([]byte, r*c),
+	}
 }
 
 func ReadCharGrid(file *os.File) *CharGrid {
