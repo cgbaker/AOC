@@ -28,12 +28,12 @@ func prob1(problem Problem) {
 	for _, th := range problem.trailheads {
 		// fmt.Println("trailhead",th)
 		visited := map[utils.Point]bool{}
-		count += dfs("", problem.grid, th, visited)
+		count += dfsScore("", problem.grid, th, visited)
 	}
 	fmt.Printf("prob1: %d\n",count)
 }
 
-func dfs(indent string, grid *utils.CharGrid, th utils.Point, visited map[utils.Point]bool) int {
+func dfsScore(indent string, grid *utils.CharGrid, th utils.Point, visited map[utils.Point]bool) int {
 	sum := 0
 	ns := getNeighbors(grid, th)
 	// fmt.Println(indent,"neighbors",ns)
@@ -45,15 +45,41 @@ func dfs(indent string, grid *utils.CharGrid, th utils.Point, visited map[utils.
 				// fmt.Println(indent,"found",n)
 				sum++
 			} else {
-				sum += dfs(indent + "  ",grid, n, visited)
+				sum += dfsScore(indent + "  ",grid, n, visited)
 			}
 		}
 	}
 	return sum
 }
 
-func prob2(_ Problem) {
-	fmt.Printf("prob2: %d\n",0)
+func prob2(problem Problem) {
+	count := 0
+	for _, th := range problem.trailheads {
+		// fmt.Println("trailhead",th)
+		visited := map[string]bool{}
+		count += dfsRating(problem.grid, th, "", visited)
+	}
+	fmt.Printf("prob2: %d\n",count)
+}
+
+func dfsRating(grid *utils.CharGrid, th utils.Point, pathPrefix string, visited map[string]bool) int {
+	sum := 0
+	ns := getNeighbors(grid, th)
+	// fmt.Println("neighbors",ns)
+	for _, n := range ns {
+		path := pathPrefix + fmt.Sprintf(";%d,%d",n.Row(),n.Col())
+		if !visited[path] {
+			// fmt.Println("visiting",path)
+			visited[path] = true
+			if grid.GetChar(&n)-'0' == 9 {
+				// fmt.Println("found",n)
+				sum++
+			} else {
+				sum += dfsRating(grid, n, path, visited)
+			}
+		}
+	}
+	return sum
 }
 
 func readInput(file *os.File) Problem {
