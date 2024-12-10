@@ -35,6 +35,11 @@ func Atoi(s string) int {
 	return x
 }
 
+type Coord interface {
+	Row() int
+	Col() int
+}
+
 // from: https://www.reddit.com/r/golang/comments/enzpes/comment/fe8q1lj
 func SplitRegex(re *regexp.Regexp) bufio.SplitFunc {
 	return func(data []byte, atEOF bool) (advance int, token []byte, err error) {
@@ -55,11 +60,6 @@ type CharGrid struct {
 	NumRows, NumCols int
 	// row-wise array
 	Chars []byte 
-}
-
-type Coord interface {
-	Row() int
-	Col() int
 }
 
 type Point struct {
