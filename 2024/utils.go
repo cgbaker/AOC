@@ -99,11 +99,29 @@ func NewCoord(r, c int) Coord {
 }
 
 func (g *CharGrid) Index(r, c int) int {
+	if r >= g.NumRows || r < 0 || c >=g.NumCols || c < 0 {
+		return -1
+	}
 	return r*g.NumCols + c
+}
+
+func (g *CharGrid) Point(index int) Point {
+	r, c := g.RowCol(index)
+	return Point{
+		r: r,
+		c: c,
+	}
 }
 
 func (g *CharGrid) RowCol(index int) (int, int) {
 	return index/g.NumCols, index%g.NumCols
+}
+
+func (g *CharGrid) GetCharFromIndex(index int) byte {
+	if index >= len(g.Chars) || index < 0 {
+		return 0
+	}
+	return g.Chars[index]
 }
 
 func (g *CharGrid) GetChar(coord Coord) byte {
@@ -128,6 +146,23 @@ func (g *CharGrid) SetChar(coord Coord, val byte) {
 		return
 	}
 	g.Chars[r*g.NumCols + c] = val;
+}
+
+func (g *CharGrid) NSEWPoints(p Point) []Point {
+	neighbors := make([]Point,0,4)
+	for _, d := range []Point{ Point{0,1}, Point{0,-1}, Point{1,0}, Point{-1,0} } {
+		neighbors = append(neighbors, p.Plus(d))
+	}
+	return neighbors
+}
+
+func (g *CharGrid) NSEW(index int) []int {
+	neighbors := make([]int,0,4)
+	p := g.Point(index)
+	for _, n := range g.NSEWPoints(p) {
+		neighbors = append(neighbors, g.Index(n.r,n.c))
+	}
+	return neighbors
 }
 
 func (g *CharGrid) Clone() *CharGrid {
@@ -173,8 +208,6 @@ func ReadCharGrid(file *os.File) *CharGrid {
 	}
 	return grid
 }
-
-
 
 func GetMiddle(x []int) int {
 	if len(x) == 0 {
