@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-type Input struct {
+type Problem struct {
 }
 
 func main() {
@@ -18,21 +18,21 @@ func main() {
 		log.Fatal(err)
 	}
 	defer file.Close()
-	input := readInput(file)
-	prob1(input)
-	prob2(input)
+	problem := readInput(file)
+	part1(problem)
+	part2(problem)
 }
 
-func prob1(_ *Input) {
+func part1(_ *Problem) {
 	fmt.Printf("prob1: %d\n",0)
 }
 
-func prob2(_ *Input) {
+func part2(_ *Problem) {
 	fmt.Printf("prob2: %d\n",0)
 }
 
-func readInput(file *os.File) *Input {
-	input := &Input{
+func readInput(file *os.File) *Problem {
+	problem := &Problem{
 	}
 	lineScanner := bufio.NewScanner(file)
 	lineScanner.Split(bufio.ScanLines)
@@ -43,9 +43,9 @@ func readInput(file *os.File) *Input {
 			// reading, _ := strconv.Atoi(wordScanner.Text())
 			// report = append(report, reading)
 		}
-		// input.reports = append(input.reports, report)
+		// problem.reports = append(problem.reports, report)
 	}
-	return input
+	return problem
 }
 
 
