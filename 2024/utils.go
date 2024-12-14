@@ -148,6 +148,14 @@ func (g *CharGrid) SetChar(coord Coord, val byte) {
 	g.Chars[r*g.NumCols + c] = val;
 }
 
+func (g *CharGrid) SetCharFromIndex(index int, val byte) {
+	if index < 0 || index > len(g.Chars) {
+		return
+	}
+	g.Chars[index] = val;
+}
+
+
 func (g *CharGrid) NSEWPoints(p Point) []Point {
 	neighbors := make([]Point,0,4)
 	for _, d := range []Point{ Point{0,1}, Point{0,-1}, Point{1,0}, Point{-1,0} } {
