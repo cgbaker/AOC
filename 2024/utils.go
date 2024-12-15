@@ -91,6 +91,10 @@ func NewPoint(r, c int) Point {
 	}
 }
 
+func NewPointFromCoord(c Coord) Point {
+	return NewPoint(c.Row(), c.Col())
+}
+
 func NewCoord(r, c int) Coord {
 	return &Point{
 		r: r,
@@ -190,7 +194,7 @@ func NewCharGrid(r, c int) *CharGrid {
 	}
 }
 
-func ReadCharGrid(file *os.File) *CharGrid {
+func ReadCharGrid(file *os.File) (*CharGrid, *bufio.Scanner) {
 	grid := &CharGrid{
 		NumCols: 0,
 		NumRows: 0,
@@ -208,13 +212,16 @@ func ReadCharGrid(file *os.File) *CharGrid {
 	}
 	for lineScanner.Scan() {
 		line := lineScanner.Text()
+		if len(line) == 0 {
+			break
+		}
 		if len(line) != grid.NumCols {
 			panic("read unexpected line number")
 		}
 		grid.NumRows++
 		grid.Chars = append(grid.Chars, []byte(line)...)
 	}
-	return grid
+	return grid, lineScanner
 }
 
 func GetMiddle(x []int) int {
