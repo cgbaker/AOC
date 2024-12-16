@@ -62,6 +62,14 @@ type CharGrid struct {
 	Chars []byte 
 }
 
+var (
+	DIR_N Point = Point{-1,0}
+	DIR_S Point = Point{ 1,0}
+	DIR_W Point = Point{0,-1}
+	DIR_E Point = Point{0, 1}
+	DIRS []Point = []Point{DIR_N,DIR_E,DIR_S,DIR_W}
+)
+
 type Point struct {
 	r, c int
 }
@@ -162,7 +170,7 @@ func (g *CharGrid) SetCharFromIndex(index int, val byte) {
 
 func (g *CharGrid) NSEWPoints(p Point) []Point {
 	neighbors := make([]Point,0,4)
-	for _, d := range []Point{ Point{0,1}, Point{0,-1}, Point{1,0}, Point{-1,0} } {
+	for _, d := range DIRS {
 		neighbors = append(neighbors, p.Plus(d))
 	}
 	return neighbors
