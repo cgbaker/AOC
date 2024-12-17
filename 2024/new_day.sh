@@ -12,4 +12,4 @@ if [ -d $NEWDIR ]; then
 fi
 
 cp -r day_template $NEWDIR
-sed -i "s/DAY/$NEWDIR/" $NEWDIR/go.mod
+sed -i '' "s/DAY/$NEWDIR/" $NEWDIR/go.mod
