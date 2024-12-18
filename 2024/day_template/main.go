@@ -24,16 +24,14 @@ func main() {
 }
 
 func part1(_ *Problem) {
-	fmt.Printf("prob1: %d\n",0)
+	fmt.Printf("part1: %d\n",0)
 }
 
 func part2(_ *Problem) {
-	fmt.Printf("prob2: %d\n",0)
+	fmt.Printf("part2: %d\n",0)
 }
 
 func readInput(file *os.File) *Problem {
-	problem := &Problem{
-	}
 	lineScanner := bufio.NewScanner(file)
 	lineScanner.Split(bufio.ScanLines)
 	for lineScanner.Scan() {
@@ -45,7 +43,8 @@ func readInput(file *os.File) *Problem {
 		}
 		// problem.reports = append(problem.reports, report)
 	}
-	return problem
+	return &Problem{
+	}
 }
 
 
