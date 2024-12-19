@@ -6,10 +6,15 @@ import (
 	"log"
 	"bufio"
 	// "github.com/cgbaker/AOC/2024/utils"
+	"github.com/schollz/progressbar/v3"
 	"strings"
 )
 
 type Problem struct {
+}
+
+func (p *Problem) size() int {
+	return 0
 }
 
 func main() {
@@ -19,8 +24,10 @@ func main() {
 	}
 	defer file.Close()
 	problem := readInput(file)
+	bar := progressbar.Default(int64(problem.size()))
 	part1(problem)
 	part2(problem)
+	bar.Add(problem.size())
 }
 
 func part1(_ *Problem) {
