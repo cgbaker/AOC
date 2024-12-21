@@ -17,6 +17,10 @@ func AbsInt(x int) int {
 	return x
 }
 
+func TaxiCab(a, b Point) int {
+	return AbsInt(a.r - b.r) + AbsInt(a.c - b.c)
+}
+
 func SignInt(x int) int {
 	if x > 0 {
 		return 1
@@ -129,7 +133,7 @@ func (g *CharGrid) RowCol(index int) (int, int) {
 	return index/g.NumCols, index%g.NumCols
 }
 
-func (g *CharGrid) GetCharFromIndex(index int) byte {
+func (g *CharGrid) GetCharByIndex(index int) byte {
 	if index >= len(g.Chars) || index < 0 {
 		return 0
 	}
@@ -150,6 +154,14 @@ func (g *CharGrid) Print() {
 		fmt.Println(string(ln[:g.NumCols]))
 		ln = ln[g.NumCols:]
 	}
+}
+
+func (g *CharGrid) IsBorder(coord Coord) bool {
+	r, c := coord.Row(), coord.Col()
+	if r == g.NumRows-1 || r == 0 || c  == g.NumCols-1 || c == 0 {
+		return true
+	}
+	return false
 }
 
 func (g *CharGrid) SetChar(coord Coord, val byte) {
@@ -183,6 +195,16 @@ func (g *CharGrid) NSEW(index int) []int {
 		neighbors = append(neighbors, g.Index(n.r,n.c))
 	}
 	return neighbors
+}
+
+func (g *CharGrid) Find(b byte) (Point,bool) {
+	for i, v := range g.Chars {
+		if v == b {
+			r, c := g.RowCol(i)
+			return NewPoint(r,c), true
+		}
+	}
+	return Point{}, false
 }
 
 func (g *CharGrid) Clone() *CharGrid {
