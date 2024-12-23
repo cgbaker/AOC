@@ -1,0 +1,156 @@
+go run main.go
+processing tb
+	neighbor: cg
+	neighbor: ka
+	neighbor: wq
+	connection: tb,vc,wq
+	neighbor: vc
+	connection: tb,vc,wq
+processing vc
+	neighbor: aq
+	connection: aq,vc,wq
+	neighbor: ub
+	connection: ub,vc,wq
+	neighbor: wq
+	connection: tb,vc,wq
+	connection: ub,vc,wq
+	connection: aq,vc,wq
+	neighbor: tb
+	connection: tb,vc,wq
+processing td
+	neighbor: wh
+	connection: tc,td,wh
+	connection: td,wh,yn
+	connection: qp,td,wh
+	neighbor: qp
+	connection: qp,td,wh
+	neighbor: yn
+	connection: td,wh,yn
+	neighbor: tc
+	connection: tc,td,wh
+processing tc
+	neighbor: wh
+	connection: tc,td,wh
+	neighbor: td
+	connection: tc,td,wh
+	neighbor: co
+	neighbor: kh
+processing yn
+	neighbor: aq
+	connection: aq,cg,yn
+	neighbor: cg
+	connection: aq,cg,yn
+	neighbor: wh
+	connection: td,wh,yn
+	neighbor: td
+	connection: td,wh,yn
+processing wh
+	neighbor: yn
+	connection: td,wh,yn
+	neighbor: qp
+	connection: qp,td,wh
+	neighbor: tc
+	connection: tc,td,wh
+	neighbor: td
+	connection: tc,td,wh
+	connection: qp,td,wh
+	connection: td,wh,yn
+processing wq
+	neighbor: tb
+	connection: tb,vc,wq
+	neighbor: ub
+	connection: ub,vc,wq
+	neighbor: aq
+	connection: aq,vc,wq
+	neighbor: vc
+	connection: tb,vc,wq
+	connection: aq,vc,wq
+	connection: ub,vc,wq
+processing de
+	neighbor: co
+	connection: co,de,ka
+	connection: co,de,ta
+	neighbor: ta
+	connection: co,de,ta
+	connection: de,ka,ta
+	neighbor: ka
+	connection: de,ka,ta
+	connection: co,de,ka
+	neighbor: cg
+processing ka
+	neighbor: co
+	connection: co,ka,ta
+	connection: co,de,ka
+	neighbor: tb
+	neighbor: ta
+	connection: co,ka,ta
+	connection: de,ka,ta
+	neighbor: de
+	connection: co,de,ka
+	connection: de,ka,ta
+processing ub
+	neighbor: kh
+	connection: kh,qp,ub
+	neighbor: wq
+	connection: ub,vc,wq
+	neighbor: vc
+	connection: ub,vc,wq
+	neighbor: qp
+	connection: kh,qp,ub
+processing kh
+	neighbor: tc
+	neighbor: qp
+	connection: kh,qp,ub
+	neighbor: ub
+	connection: kh,qp,ub
+	neighbor: ta
+processing qp
+	neighbor: ub
+	connection: kh,qp,ub
+	neighbor: td
+	connection: qp,td,wh
+	neighbor: wh
+	connection: qp,td,wh
+	neighbor: kh
+	connection: kh,qp,ub
+processing aq
+	neighbor: yn
+	connection: aq,cg,yn
+	neighbor: vc
+	connection: aq,vc,wq
+	neighbor: cg
+	connection: aq,cg,yn
+	neighbor: wq
+	connection: aq,vc,wq
+processing ta
+	neighbor: ka
+	connection: co,ka,ta
+	connection: de,ka,ta
+	neighbor: de
+	connection: co,de,ta
+	connection: de,ka,ta
+	neighbor: kh
+	neighbor: co
+	connection: co,ka,ta
+	connection: co,de,ta
+processing cg
+	neighbor: de
+	neighbor: tb
+	neighbor: yn
+	connection: aq,cg,yn
+	neighbor: aq
+	connection: aq,cg,yn
+processing co
+	neighbor: ka
+	connection: co,ka,ta
+	connection: co,de,ka
+	neighbor: ta
+	connection: co,ka,ta
+	connection: co,de,ta
+	neighbor: de
+	connection: co,de,ta
+	connection: co,de,ka
+	neighbor: tc
+map[aq,cg,yn:true aq,vc,wq:true co,de,ka:true co,de,ta:true co,ka,ta:true de,ka,ta:true kh,qp,ub:true qp,td,wh:true tb,vc,wq:true tc,td,wh:true td,wh,yn:true ub,vc,wq:true]
+part1: 12
+part2: 0
