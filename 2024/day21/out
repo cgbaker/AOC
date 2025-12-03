@@ -1,0 +1,13 @@
+go run main.go
+code: 029A solution: v<<A>A>^A<v<A>^>AAvAA^<A>Av<A^>AA<Av<A>^>AvA^Av<A<AA>^>AvAA^<A>Av<A^>A<A>Av<A<AA>^>AvAA<^A>AAv<A<A>>^AvA^A<A>A<v<A>^>AvA^Av<A<AA>>^AvA^A<Av>A^AAAv<<A>^>AvA<A>^A<A>A complexity: 4756
+code: 980A solution: v<A<AA>^>AvAA^<A>AAA<vA^>A<A>Av<A<A>^>A<v<A>^>AAvAA^<A>A<vA^>AA<Av<A>^>AvA^A<vA<AA>>^AvA^A<A>vA^AAAv<<A>^>Av<A>A^A<A>Av<A<A>^>A<A>vA^Av<<A>>^AvA^A complexity: 143080
+code: 179A solution: <vA<AA>^>AvAA<^A>Av<A<A>>^Av<<A>^>AvAA^<A>AAv<A^>AA<Av<A>^>AvA^Av<A<AA>^>AvAA^<A>AAv<A^>A<A>A<vA<A>^>AvA^<A>AAv<<A>>^AvA^A<vA<AA>^>AvA^AvA^<A>AAAv<<A>>^AvA<A^>A<A>A complexity: 29356
+code: 456A solution: v<A<AA>>^AvAA<^A>AAv<A<A>>^Av<<A>^>AvAA^<A>AA<vA^>AA<Av<A>^>AvA^Av<A<A>>^A<Av>A^Av<<A>>^AvA^A<vA<A>^>A<A>vA^Av<<A>>^AvA^Av<A<AA>>^AvA^AvA<^A>AA<v<A>>^Av<A>A^A<A>A complexity: 73872
+code: 379A solution: v<A<AA>>^AvAA<^A>Av<A^>A<A>Av<A<A>>^Av<<A>^>AAvAA^<A>AAv<A^>Av<<A>^A>AvA^AAv<A^>A<A>Av<A<A>^>A<A>vA^AAv<<A>^>AvA^A<vA<AA>>^AvA^A<A>vA^AAAv<A^>A<Av<A>^>AvA^A complexity: 59124
+part1: 310188
+code: 029A solution: v<A<A>>^Av<<A>>^AAvAA^<A>Av<A^>AA<Av<A>>^AvA^Av<A<AA>>^AvAA^<A>Av<A^>A<A>Av<A<AA>>^AvAA^<A>AAv<A<A>>^AvA^A<A>Av<<A>>^AvA^Av<A<A>>^Av<<A>>^AvAA^<A>AAAv<<A>>^Av<A>A^A<A>A complexity: 4872
+code: 980A solution: v<A<AA>>^AvAA^<A>AAAv<A^>A<A>Av<A<A>>^Av<<A>>^AAvAA^<A>Av<A^>AA<Av<A>>^AvA^Av<A<A>>^Av<<A>>^AvAA^<A>AAAv<<A>>^Av<A>A^A<A>Av<A<A>>^A<Av>A^Av<<A>>^AvA^A complexity: 147000
+code: 179A solution: v<A<AA>>^AvAA^<A>Av<A<A>>^Av<<A>>^AvAA^<A>AAv<A^>AA<Av<A>>^AvA^Av<A<AA>>^AvAA^<A>AAv<A^>A<A>Av<A<A>>^A<Av>A^AAv<<A>>^AvA^Av<A<A>>^Av<<A>>^AvAA^<A>AAAv<<A>>^Av<A>A^A<A>A complexity: 30072
+code: 456A solution: v<A<AA>>^AvAA^<A>AAv<A<A>>^Av<<A>>^AvAA^<A>AAv<A^>AA<Av<A>>^AvA^Av<A<A>>^A<Av>A^Av<<A>>^AvA^Av<A<A>>^A<Av>A^Av<<A>>^AvA^Av<A<A>>^Av<<A>>^AvAA^<A>AAv<<A>>^Av<A>A^A<A>A complexity: 75696
+code: 379A solution: v<A<AA>>^AvAA^<A>Av<A^>A<A>Av<A<A>>^Av<<A>>^AAvAA^<A>AAv<A^>A<Av<A>>^AvA^AAv<A^>A<A>Av<A<A>>^A<Av>A^AAv<<A>>^AvA^Av<A<A>>^Av<<A>>^AvAA^<A>AAAv<<A>>^Av<A>A^A<A>A complexity: 60640
+part2: 318280
