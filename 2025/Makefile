@@ -1,5 +1,5 @@
 
-default: run02
+default: run03
 
 run01: day01
 	@echo "# Sample"
@@ -18,3 +18,12 @@ run02: day02
 
 day02: day02.cxx input02.txt sample02.txt
 	g++ -std=c++23 day02.cxx -o day02
+
+run03: day03
+	@echo "# Sample"
+	@./day03 < sample03.txt
+	@echo "# Real"
+	@./day03 < input03.txt
+
+day03: day03.cxx input03.txt sample03.txt
+	g++ -std=c++23 day03.cxx -o day03
