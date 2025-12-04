@@ -1,10 +1,7 @@
-#include <fstream>
 #include <string>
-#include <functional>
 #include <iostream>
 
 using std::string;
-using std::vector;
 
 bool splitAndCompare(const string& s, int num_pieces) {
     if (s.length() % num_pieces != 0) {
