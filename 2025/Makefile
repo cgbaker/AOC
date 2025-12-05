@@ -13,5 +13,5 @@ day%: day%.cxx input%.txt sample%.txt
 run%: day%
 	@echo "# Sample"
 	@./$< < sample$*.txt
-	@echo "# Real"
-	@./$< < input$*.txt
+#	@echo "# Real"
+#	@./$< < input$*.txt
