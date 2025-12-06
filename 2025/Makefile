@@ -7,7 +7,7 @@ default: run$(LATEST)
 # Pattern rule: build dayNN from dayNN.cxx
 day%: day%.cxx 
 	@echo Compiling $@...
-	@g++ -std=c++23 $< -o $@
+	@g++ -g -std=c++23 $< -o $@
 
 # Pattern rule: run sample + real inputs
 run%: day% input%.txt sample%.txt
