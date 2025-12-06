@@ -5,13 +5,13 @@ LATEST := $(shell ls day*.cxx 2>/dev/null | sed -E 's/day([0-9]+)\.cxx/\1/' | so
 default: run$(LATEST)
 
 # Pattern rule: build dayNN from dayNN.cxx
-day%: day%.cxx input%.txt sample%.txt
+day%: day%.cxx 
 	@echo Compiling $@...
 	@g++ -std=c++23 $< -o $@
 
 # Pattern rule: run sample + real inputs
-run%: day%
+run%: day% input%.txt sample%.txt
 	@echo "# Sample"
 	@./$< < sample$*.txt
-#	@echo "# Real"
-#	@./$< < input$*.txt
+	@echo "# Real"
+	@./$< < input$*.txt
