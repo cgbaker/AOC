@@ -21,8 +21,7 @@ using std::pair;
 using std::string;
 using std::vector;
 
-int main()
-{
+int64_t part1() {
     vector<vector<int64_t>> operands;
 
     string ln;
@@ -58,8 +57,59 @@ int main()
         }
         it++;
     }
+    return part1;
+}
 
-    cout << "Part 1: " << part1 << endl;
-    // cout << "Part 2: " << part2 << endl;
+int64_t part2()
+{
+    int64_t part2 = 0;
+
+    vector<string> lines;
+    string ln;
+    while (std::getline(std::cin, ln))
+    {
+        lines.push_back(ln);
+    }
+    auto ops = lines.back();
+    lines.pop_back();
+    auto op_ptr = ops.end();
+    --op_ptr;
+
+    // get point to last entry in string
+    vector<string::iterator> pointers;
+    for (auto it = lines.begin(); it != lines.end(); it++)
+    {
+        auto end = it->end();
+        --end;
+        pointers.push_back(end);
+    }
+
+    // scan from the back to the front
+    do {
+        // build operands
+        vector<int64_t> operands;
+        while (*op_ptr == ' ') {
+            --op_ptr;
+        }
+        // apply op to operands
+        cout << *op_ptr;
+        switch (*op_ptr)
+        {
+        case '*':
+            break;
+        case '+':
+            break;
+        }
+        if (op_ptr != ops.begin()) --op_ptr;
+    } while (op_ptr != ops.begin());
+    cout << endl;
+
+    return part2;
+}
+
+int main()
+{
+    // cout << "Part 1: " << part1() << endl;
+    cout << "Part 2: " << part2() << endl;
     return 0;
 }
