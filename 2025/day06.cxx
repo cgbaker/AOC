@@ -60,6 +60,20 @@ int64_t part1() {
     return part1;
 }
 
+int64_t getOperand(vector<string::iterator> &pointers)
+{
+    int64_t operand = 0;
+    for (auto p = pointers.begin(); p != pointers.end(); ++p)
+    {
+        if (**p != ' ')
+        {
+            operand = 10 * operand + (**p - '0');
+        }
+        --(*p);
+    }
+    return operand;
+}
+
 int64_t part2()
 {
     int64_t part2 = 0;
@@ -85,24 +99,39 @@ int64_t part2()
     }
 
     // scan from the back to the front
+    bool done = false;
     do {
         // build operands
         vector<int64_t> operands;
-        while (*op_ptr == ' ') {
+        char op;
+        do {
+            operands.push_back(getOperand(pointers));
+            op = *op_ptr;
+            if (op_ptr == ops.begin()) {
+                done = true;
+            } else {
+                --op_ptr;
+            }
+        } while (op == ' ');
+        if (!done) {
+            // skip the blank column
             --op_ptr;
-        }
+            auto op = getOperand(pointers);
+            if (op != 0) {
+                EXIT_FAILURE;
+            }
+        }        
         // apply op to operands
-        cout << *op_ptr;
-        switch (*op_ptr)
+        switch (op)
         {
-        case '*':
-            break;
         case '+':
+            part2 += std::accumulate(operands.begin(), operands.end(), int64_t(0), std::plus<int64_t>{});
+            break;
+        case '*':
+            part2 += std::accumulate(operands.begin(), operands.end(), int64_t(1), std::multiplies<int64_t>{});
             break;
         }
-        if (op_ptr != ops.begin()) --op_ptr;
-    } while (op_ptr != ops.begin());
-    cout << endl;
+    } while (!done);
 
     return part2;
 }
