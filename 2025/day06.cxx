@@ -13,6 +13,7 @@
 #include <set>
 #include <string>
 #include <string_view>
+#include <fstream>
 
 using std::cout;
 using std::endl;
@@ -21,12 +22,12 @@ using std::pair;
 using std::string;
 using std::vector;
 
-int64_t part1() {
+int64_t part1(std::ifstream &fin) {
     vector<vector<int64_t>> operands;
 
     string ln;
     bool first_line = true;
-    while (std::getline(std::cin,ln)) {
+    while (std::getline(fin,ln)) {
         if (ln.find_first_of("+*") != std::string::npos) break;
         std::stringstream ss(ln);
         int64_t val;
@@ -74,13 +75,13 @@ int64_t getOperand(vector<string::iterator> &pointers)
     return operand;
 }
 
-int64_t part2()
+int64_t part2(std::ifstream &fin)
 {
     int64_t part2 = 0;
 
     vector<string> lines;
     string ln;
-    while (std::getline(std::cin, ln))
+    while (std::getline(fin, ln))
     {
         lines.push_back(ln);
     }
@@ -138,7 +139,8 @@ int64_t part2()
 
 int main()
 {
-    // cout << "Part 1: " << part1() << endl;
-    cout << "Part 2: " << part2() << endl;
+    std::ifstream fin("input06.txt");
+    // cout << "Part 1: " << part1(fin) << endl;
+    cout << "Part 2: " << part2(fin) << endl;
     return 0;
 }
