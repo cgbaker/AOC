@@ -14,6 +14,7 @@
 #include <string>
 #include <string_view>
 #include <fstream>
+#include <map>
 
 using std::cout;
 using std::endl;
@@ -21,6 +22,7 @@ using std::list;
 using std::pair;
 using std::string;
 using std::vector;
+using std::map;
 
 const char START = 'S';
 const char SPLITTER = '^';
@@ -45,17 +47,47 @@ int64_t part1(std::ifstream &fin) {
     return part1;
 }
 
+map<pair<int,int>, int64_t> cache;
+
+int64_t DFS(int pos, int depth, vector<string> lines) {
+    if (pos < 0 || pos >= lines[0].length()) return 0;
+    if (depth >= lines.size()) return 1;
+
+    auto it = cache.find({pos, depth});
+    if (it != cache.end())
+    {
+        return it->second;
+    }
+
+    string ln = lines[depth];
+    int64_t ans;
+    if (ln[pos] == SPLITTER) {
+        ans = DFS(pos-1,depth+1,lines) + DFS(pos+1,depth+1,lines);
+    } else {
+        ans = DFS(pos, depth+1, lines);
+    }
+    cache[{pos,depth}] = ans;
+    return ans;
+}
+
 int64_t part2(std::ifstream &fin)
 {
     int64_t part2 = 0;
-    return part2;
+    string ln;
+    vector<string> lines;
+    std::getline(fin,ln);
+    int pos = ln.find_first_of(START);
+    while (std::getline(fin, ln)) {
+        lines.push_back(ln);
+    } 
+    return DFS(pos, 0, lines);
 }
 
 int main(int argc, char *argv[])
 {
     std::ifstream fin(argv[1]);
     // std::ifstream fin("input07.txt");
-    cout << "Part 1: " << part1(fin) << endl;
-    // cout << "Part 2: " << part2(fin) << endl;
+    // cout << "Part 1: " << part1(fin) << endl;
+    cout << "Part 2: " << part2(fin) << endl;
     return 0;
 }
