@@ -12,6 +12,6 @@ day%: day%.cxx
 # Pattern rule: run sample + real inputs
 run%: day% input%.txt sample%.txt
 	@echo "# Sample"
-	@./$< < sample$*.txt
+	@./$< sample$*.txt
 	@echo "# Real"
-	@./$< < input$*.txt
+	@./$< input$*.txt
